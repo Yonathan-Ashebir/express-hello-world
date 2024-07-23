@@ -22,6 +22,50 @@ function mLog(level, message, tag = "Y_Tech") {
     }
 }
 
+function testSTUNFull(callback, localPort = SEPARATE_CONNECTION_PORT) {
+    const sock = new Socket()
+    const sock2 = new Socket()
+    let cummulate = []
+
+    sock.on('error', (err) => {
+        const msg = `Stun to 212.53.40.40 failed: ${err.message}`;
+        mLog(MY_LOG_WARN, msg)
+        callback(msg)
+    })
+
+    sock2.on('error', (err) => {
+        const msg = `Stun to 49.12.125.53 failed: ${err.message}`;
+        mLog(MY_LOG_WARN, msg)
+        callback(msg)
+    })
+
+    sock.connect({ host: '212.53.40.40', port: 3478, localPort }, () => {
+        const request = new StunRequest()
+        request.setType(stunConstants.STUN_BINDING_REQUEST)
+
+        sock.on('data', buf => {
+            const res = decode(buf)
+            cummulate.push(res.getXorAddress())
+            if (cummulate.length == 2) callback(cummulate)
+            sock.destroy()
+        })
+        sock.write(request.toBuffer())
+    })
+
+    sock2.connect({ host: '49.12.125.53', port: 3478, localPort }, () => {
+        const request = new StunRequest()
+        request.setType(stunConstants.STUN_BINDING_REQUEST)
+
+        sock2.on('data', buf => {
+            const res = decode(buf)
+            cummulate.push(res.getXorAddress())
+            if (cummulate.length == 2) callback(cummulate)
+            sock2.destroy()
+        })
+        sock2.write(request.toBuffer())
+    })
+}
+
 function getTCPPublicAddress(localPort, callback, closeImmediately = true) {
     const sock = new Socket()
 
@@ -72,6 +116,7 @@ module.exports = {
     getTCPPublicAddress,
     getTCPPublicAddress,
     sendToAddress,
+    testSTUNFull,
     MY_LOG_VERBOSE,
     MY_LOG_DEBUG,
     MY_LOG_INFO,

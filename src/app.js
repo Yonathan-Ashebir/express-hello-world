@@ -1,6 +1,6 @@
 const express = require("express");
 const { DEFAULt_LOCAL_PORT } = require("./constants");
-const { mLog, MY_LOG_DEBUG, getTCPPublicAddress, sendToAddress } = require("./include");
+const { mLog, MY_LOG_DEBUG, getTCPPublicAddress, sendToAddress, testSTUNFull } = require("./include");
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -10,6 +10,12 @@ app.get("/", (req, res) => res.type('html').send(html));
 
 app.get("/testTCPPublicAddress", (req, res) => {
   getTCPPublicAddress(DEFAULt_LOCAL_PORT, (addr) => {
+    res.end(JSON.stringify(addr))
+  })
+})
+
+app.get("/testSTUNFull", (req, res) => {
+  testSTUNFull((addr) => {
     res.end(JSON.stringify(addr))
   })
 })

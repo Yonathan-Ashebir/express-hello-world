@@ -1,4 +1,5 @@
-const { Socket } = require('net')
+const net = require('net')
+const Socket = net.Socket;
 const { StunRequest, decode, constants: stunConstants } = require("stun");
 const { SEPARATE_CONNECTION_PORT, CONNECT_INTERVAL, CONNECT_TIMEOUT, CONNECT_RETRY_DELAY } = require('./constants')
 
@@ -60,8 +61,9 @@ function sendToAddress(ip, port, msg, localPort = SEPARATE_CONNECTION_PORT) {
             sock.destroy()
             setTimeout(() => sock.connect({ host: ip, port, localPort }), CONNECT_RETRY_DELAY)
         } else {
+            sock.destroy()
             clearInterval(retryInterval)
-            mLog(MY_LOG_WARN, `Cancelled interval`)
+            mLog(MY_LOG_WARN, `Cancelled interval of attempt to ${ip}:${port}`)
         }
     }, CONNECT_INTERVAL);
 }

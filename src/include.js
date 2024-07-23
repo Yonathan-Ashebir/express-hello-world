@@ -83,7 +83,7 @@ function getTCPPublicAddress(localPort, callback, closeImmediately = true) {
 }
 
 function sendToAddress(ip, port, msg, localPort = SEPARATE_CONNECTION_PORT) {
-    mLog(MY_LOG_WARN, `Sending to address ${ip}:${port}, data: ${msg}`)
+    mLog(MY_LOG_DEBUG, `Sending to address ${ip}:${port}, data: ${msg}`)
     const sock = new Socket()
     const startTime = new Date().getTime()
     sock.on('error', err => {

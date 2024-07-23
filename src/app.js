@@ -22,7 +22,7 @@ app.get("/testSTUNFull", (req, res) => {
 
 app.get("/testSeparateConnection", (req, res) => {
   mLog(MY_LOG_DEBUG, `Responding to sparate address: ${req.query}}`)
-  sendToAddress(req.query['ip'], req.query['port'], "Hello separately!")
+  sendToAddress(req.query['ip'], req.query['port'], "898wdhf separately!")
   res.end("Ignited!")
 })
 

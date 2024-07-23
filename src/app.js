@@ -1,5 +1,6 @@
 const express = require("express");
 const { DEFAULt_LOCAL_PORT } = require("./constants");
+const { Server } = require('net')
 const { mLog, MY_LOG_DEBUG, getTCPPublicAddress, sendToAddress, testSTUNFull } = require("./include");
 
 const app = express();
@@ -22,11 +23,16 @@ app.get("/testSTUNFull", (req, res) => {
 
 app.get("/testSeparateConnection", (req, res) => {
   mLog(MY_LOG_DEBUG, `Responding to sparate address: ${req.query}}`)
-  sendToAddress(req.query['ip'], req.query['port'], "898wdhf separately!")
+  sendToAddress(req.query['ip'], req.query['port'], "GET / HTTP/1.0")
   res.end("Ignited!")
 })
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+const test = new Server()
+test.on('connection', sock => {
+  mLog(MY_LOG_DEBUG, `Listener conncted to ${sock.remoteAddress}`)
+})
+test.listen(33334);
 
 server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 120 * 1000;

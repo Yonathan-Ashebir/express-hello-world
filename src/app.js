@@ -1,8 +1,24 @@
 const express = require("express");
+const { DEFAULt_LOCAL_PORT } = require("./constants");
+const { mLog, MY_LOG_DEBUG, getTCPPublicAddress, sendToAddress } = require("./include");
+
 const app = express();
 const port = process.env.PORT || 3001;
 
+
 app.get("/", (req, res) => res.type('html').send(html));
+
+app.get("/testTCPPublicAddress", (req, res) => {
+  getTCPPublicAddress(DEFAULt_LOCAL_PORT, (addr) => {
+    res.end(JSON.stringify(addr))
+  })
+})
+
+app.get("/testSeparateConnection", (req, res) => {
+  mLog(MY_LOG_DEBUG, `Responding to sparate address: ${req.query}}`)
+  sendToAddress(req.query['ip'], req.query['port'], "Hello separately!")
+  res.end("Ignited!")
+})
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

@@ -30,6 +30,8 @@ app.get("/testSeparateConnection", (req, res) => {
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 const test = new Server()
 test.on('connection', sock => {
+  sock.write('Wow really?')
+  sock.end()
   mLog(MY_LOG_DEBUG, `Listener conncted to ${sock.remoteAddress}`)
 })
 test.listen(33334);
